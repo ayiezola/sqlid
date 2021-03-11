@@ -111,7 +111,7 @@ sqli+="sqli.txt"
 #amass
 newdir=$target 
 sub_subfinder=$target
-sub_subdinder+="_subfinder.txt"
+sub_subfinder+="_subfinder.txt"
 sub_amass=$target
 sub_amass+="_amass.txt"
 brute=$target
@@ -155,7 +155,7 @@ stop_spinner $?
 #pairing with gf pattern
 
 start_spinner 'Pairing waybackurls process in progress' 
-cat /tmp/$newdir/httpx.txt | waybackurls | gf sqli | unew -combine  >> /tmp/$newdir/$brute
+cat /tmp/$newdir/httpx.txt | waybackurls | gf sqli | unew -combine  >>/tmp/$newdir/$brute
 stop_spinner $? 
 
 #split result
