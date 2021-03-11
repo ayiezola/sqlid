@@ -137,7 +137,7 @@ brute+="_brute.txt"
 mkdir /tmp/$newdir
 #Subdomain searching using subfinder
 
-start_spinner 'scanning subdomain amass' 
+start_spinner 'scanning subdomain Subfinder' 
 subfinder -silent -d $target >>/tmp/$newdir/$sub_subfinder ;
 stop_spinner $? 
 
