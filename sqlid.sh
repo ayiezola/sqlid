@@ -200,8 +200,7 @@ stop_spinner $?
 
 
 
-#rm -f /tmp/$sub
-# rm -f /tmp/$brute
+
 
 #single_attack
  elif [ $att -eq 3 ]
