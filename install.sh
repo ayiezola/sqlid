@@ -5,7 +5,7 @@ echo "Installing sqlid"
 sudo apt install -y jq
 cd sqlid/bin
 sudo mv * /usr/local/bin
-
+cd ~
 mv -r sqlid /opt/
 cd /opt/sqlid
 chmod +x sqlid.sh
