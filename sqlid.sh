@@ -179,7 +179,7 @@ last+="p"
 #create new session
 
 tmux new-window -t $target_session:$c -n $session_window	
-sed -n $start,$last /tmp/$newdir/$brute >>/tmp/$newdir/$webarg
+sed -n $start,$last /tmp/$newdir/$brute >>/tmp/$newdir/$session_window
 
 #create multiple window
 
