@@ -10,6 +10,7 @@ mv -r sqlid /opt/
 cd /opt/sqlid
 chmod +x sqlid.sh
 chmod +x uDork.sh
+cp /opt/sqlid/.gf ~/.gf
 cd /usr/local/bin
 sudo ln -s /opt/sqlid/sqlid.sh sqlid
 sudo ln -s /opt/sqlid/uDork.sh udork
